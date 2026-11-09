@@ -6,6 +6,18 @@ Um teste vocacional para alunos de TI, feito em C++ com árvores N-árias, que r
 
 **Pergunta de pesquisa:** ordenar as perguntas por ganho de informação reduz o número de perguntas necessárias para recomendar um PES e um segundo ciclo, sem perder acurácia, em comparação com uma ordem manual e uma ordem aleatória?
 
+## Como começar
+
+Repositório: https://github.com/helena-varela/teste-vocacional-com-arvores-n-arias
+
+```bash
+git clone git@github.com:helena-varela/teste-vocacional-com-arvores-n-arias.git
+cd teste-vocacional-com-arvores-n-arias
+git checkout -b pessoaN-nome-da-parte   # ex.: pessoa2-perguntas
+```
+
+Trabalhe no seu branch e, quando terminar uma parte, abra um pull request para o `main`.
+
 ## Como compilar e rodar
 
 É preciso ter `g++` (C++17) e `make`.
