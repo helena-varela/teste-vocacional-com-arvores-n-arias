@@ -39,7 +39,6 @@ src/                implementação (.cpp)
   exemplo.cpp       árvores pequenas montadas à mão (provisórias, só para teste)
   main.cpp          menu inicial
 tests/              testes unitários
-uso_de_ia.md        registro do uso de IA (vira o Anexo A do artigo)
 ```
 
 ## Divisão dos módulos
@@ -74,4 +73,3 @@ arvore.imprimir_preordem(std::cout);
 
 - Cada pessoa trabalha no seu próprio branch e abre um pull request. Outra pessoa revisa antes do merge.
 - Rode `make testes` antes de abrir o pull request.
-- Anote no `uso_de_ia.md` sempre que usar uma ferramenta de IA.
