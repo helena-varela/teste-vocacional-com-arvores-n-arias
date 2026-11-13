@@ -37,7 +37,10 @@ src/                implementação (.cpp)
   arvore.cpp        estrutura N-ária: nós, pré-ordem, BFS, altura, contagens
   terminal.cpp      leitura e validação das respostas no terminal
   exemplo.cpp       árvores pequenas montadas à mão (provisórias, só para teste)
+  perguntas.cpp     banco de perguntas: carregar_perguntas(), rotulos_*, ordem_manual()
   main.cpp          menu inicial
+dados/              arquivos de dados
+  perguntas.txt     banco de perguntas no formato P;id;texto / A;letra;texto;ROTULO=peso
 tests/              testes unitários
 ```
 
