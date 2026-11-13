@@ -30,8 +30,12 @@ std::string arquivo_temp(const std::string& conteudo) {
     char tmpl[] = "/tmp/test_perguntas_XXXXXX";
     int fd = mkstemp(tmpl);
     if (fd == -1) throw std::runtime_error("nao foi possivel criar arquivo temporario");
-    ::write(fd, conteudo.data(), conteudo.size());
+    const ssize_t escritos = ::write(fd, conteudo.data(), conteudo.size());
     ::close(fd);
+    if (escritos != static_cast<ssize_t>(conteudo.size())) {
+        std::remove(tmpl);
+        throw std::runtime_error("nao foi possivel escrever o arquivo temporario");
+    }
     return std::string(tmpl);
 }
 
@@ -208,8 +212,7 @@ void teste_id_repetido() {
 }
 
 void teste_texto_pergunta_vazio() {
-    // "P;1;" — o campo de texto não existe após o último ';', disparando "falta o texto".
-    // "P;1; " — campo existe mas é só espaço, disparando "vazio".
+    // "P;1;" — o texto depois do último ';' fica vazio e dispara "texto da pergunta esta vazio".
     verificar_erro("P;1;\n", "texto da pergunta", "texto de pergunta vazio/ausente lanca erro");
 }
 
@@ -279,6 +282,15 @@ void teste_peso_fora_do_intervalo() {
         "A;a;Alt a;PES_IOT=6\n",
         "fora do intervalo 1-5",
         "peso fora do intervalo lanca erro");
+}
+
+void teste_numeros_grandes() {
+    verificar_erro("P;12345678901234;Pergunta\n", "grande demais", "id com muitos digitos lanca erro com a linha");
+    verificar_erro(
+        "P;1;Pergunta\n"
+        "A;a;Alt a;PES_IOT=12345678901234\n",
+        "fora do intervalo 1-5",
+        "peso com muitos digitos lanca erro com a linha");
 }
 
 void teste_rotulo_invalido() {
@@ -355,6 +367,7 @@ int main() {
     teste_peso_sem_igual();
     teste_peso_nao_numerico();
     teste_peso_fora_do_intervalo();
+    teste_numeros_grandes();
     teste_rotulo_invalido();
     teste_rotulo_repetido();
     teste_rotulo_sem_cobertura();

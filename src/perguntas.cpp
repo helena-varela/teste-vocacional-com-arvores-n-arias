@@ -5,7 +5,6 @@
 #include <set>
 #include <sstream>
 #include <stdexcept>
-#include <unordered_set>
 
 // ---------------------------------------------------------------------------
 // Rótulos válidos
@@ -127,6 +126,9 @@ std::vector<Pergunta> carregar_perguntas(const std::string& arquivo) {
             if (!id_valido) {
                 throw std::runtime_error(prefixo(arquivo, num_linha) + "id nao numerico: \"" + campo_id + "\"");
             }
+            if (campo_id.size() > 9) {  // evita std::out_of_range no stoi
+                throw std::runtime_error(prefixo(arquivo, num_linha) + "id grande demais: \"" + campo_id + "\"");
+            }
             const int id = std::stoi(campo_id);
             if (id <= 0) {
                 throw std::runtime_error(prefixo(arquivo, num_linha) + "id deve ser maior que zero");
@@ -178,14 +180,10 @@ std::vector<Pergunta> carregar_perguntas(const std::string& arquivo) {
             }
 
             // ----- Lê texto -----
+            // Lê até o próximo ';' ou até o fim da linha (alternativa sem pesos).
             std::string texto_alt;
-            if (!std::getline(ss, texto_alt, ';')) {
-                // Tenta sem ';' no final (última alternativa sem pesos).
-                std::getline(ss, texto_alt);
-            }
+            std::getline(ss, texto_alt, ';');
             texto_alt = aparar(texto_alt);
-            // Reabsorve o restante da linha se havia ';' como separador.
-            // Na prática, getline(ss, texto_alt, ';') já faz isso.
             if (texto_alt.empty()) {
                 throw std::runtime_error(prefixo(arquivo, num_linha) + "texto da alternativa esta vazio");
             }
@@ -221,11 +219,12 @@ std::vector<Pergunta> carregar_perguntas(const std::string& arquivo) {
                 if (!valor_ok) {
                     throw std::runtime_error(prefixo(arquivo, num_linha) + "peso nao numerico: \"" + valor_str + "\"");
                 }
-                const int peso = std::stoi(valor_str);
+                // Mais de 2 dígitos já está fora de 1-5 (e evita std::out_of_range no stoi).
+                const int peso = valor_str.size() > 2 ? 99 : std::stoi(valor_str);
                 if (peso < 1 || peso > 5) {
                     throw std::runtime_error(
                         prefixo(arquivo, num_linha) +
-                        "peso fora do intervalo 1-5: " + std::to_string(peso));
+                        "peso fora do intervalo 1-5: " + valor_str);
                 }
 
                 rotulos_na_alt.insert(rotulo);
