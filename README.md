@@ -72,6 +72,42 @@ arvore.imprimir_preordem(std::cout);
 - Uma folha não pode receber filhos (`adicionar_filho` lança `std::invalid_argument`).
 - A memória é liberada sozinha quando a `Arvore` é destruída (`std::unique_ptr`).
 
+## Perfis sintéticos e gráficos
+
+O script Python usa os pesos de `dados/perguntas.txt` para definir, para cada
+combinação PES+ciclo, a alternativa típica de cada pergunta (maior soma dos
+dois pesos; em empate, vence a primeira alternativa no arquivo). A pergunta 5
+não tem pesos e, portanto, fica empatada; a primeira alternativa é escolhida
+como desempate determinístico.
+
+Instale as dependências e gere 1.200 respondentes por cenário:
+
+```bash
+python3 -m pip install -r requirements.txt
+python3 scripts/gerar_perfis.py
+```
+
+O script cria três cenários (10%, 25% e 40%), cada qual com CSVs separados de
+treino e teste (70/30, semente padrão 42), além de `perfis_tipicos.csv` e do
+PDF `aderencia_perfil.pdf`, em `dados/sinteticos/`. Cada registro tem exatamente
+um rótulo PES e um rótulo de ciclo. Em cada pergunta, segue a alternativa
+típica com probabilidade `1 - ruído`; no restante, sorteia uma alternativa
+uniformemente entre todas as opções da pergunta.
+
+Argumentos opcionais: `--n`, `--ruidos` (frações entre 0 e 1),
+`--semente` e `--saida`. Exemplo:
+
+```bash
+python3 scripts/gerar_perfis.py --n 600 --ruidos 0.1,0.25,0.4 --semente 42
+```
+
+Os dados são sintéticos e reproduzem os pesos atuais, não constituindo
+validação empírica dos perfis ou das recomendações. A proposta de trabalhos
+relacionados, lacuna e matriz de 15 referências-base candidatas está em
+[`docs/trabalhos-relacionados.md`](docs/trabalhos-relacionados.md). O repositório
+não continha a bibliografia já coletada pelos integrantes; a contagem final do
+grupo deve ser confirmada após mesclar essas fontes.
+
 ## Combinados do grupo
 
 - Cada pessoa trabalha no seu próprio branch e abre um pull request. Outra pessoa revisa antes do merge.
