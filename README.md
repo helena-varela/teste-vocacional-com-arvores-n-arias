@@ -102,11 +102,7 @@ python3 scripts/gerar_perfis.py --n 600 --ruidos 0.1,0.25,0.4 --semente 42
 ```
 
 Os dados são sintéticos e reproduzem os pesos atuais, não constituindo
-validação empírica dos perfis ou das recomendações. A proposta de trabalhos
-relacionados, lacuna e matriz de 15 referências-base candidatas está em
-[`docs/trabalhos-relacionados.md`](docs/trabalhos-relacionados.md). O repositório
-não continha a bibliografia já coletada pelos integrantes; a contagem final do
-grupo deve ser confirmada após mesclar essas fontes.
+validação empírica dos perfis ou das recomendações.
 
 ## Combinados do grupo
 

@@ -69,3 +69,9 @@ Testing/
 # Saidas de compilacao
 bin/
 build/
+
+# Python
+.venv/
+venv/
+__pycache__/
+*.pyc
