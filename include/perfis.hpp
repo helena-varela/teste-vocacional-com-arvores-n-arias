@@ -24,5 +24,5 @@ const std::string& rotulo(const Perfil& perfil, Alvo alvo);
 
 // Lê um CSV de perfis. Lança std::runtime_error com "arquivo:linha: motivo"
 // se faltar coluna, se uma resposta não for uma letra etc.
-// DONO: a definir (Pessoa 4 ou Pessoa 5).
+// Responsável: Pessoa 5.
 std::vector<Perfil> carregar_perfis(const std::string& arquivo_csv);
