@@ -70,8 +70,8 @@ void executar_teste_interativo(const Arvore& arvore_pes,
     const Classificacao ciclo = classificar(arvore_ciclo, cache);
 
     out << "\n========== RESULTADO ==========\n";
-    out << "PES recomendado: " << pes.resultado << "\n";
-    out << "2o ciclo recomendado: " << ciclo.resultado << "\n";
+    out << "PES recomendado: " << nome_rotulo(pes.resultado) << "\n";
+    out << "2o ciclo recomendado: " << nome_rotulo(ciclo.resultado) << "\n";
     out << "Perguntas respondidas: " << cache.size() << "\n";
     out << "Caminho no PES: ";
     for (int id : pes.caminho) out << "P" << id << " ";

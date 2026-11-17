@@ -25,6 +25,11 @@ const std::vector<std::string>& rotulos_pes();
 // Rótulos válidos de ciclo (3 no total).
 const std::vector<std::string>& rotulos_ciclo();
 
+// Nome por extenso de um rótulo, para mostrar ao usuário
+// (ex.: "PES_IOT" -> "Internet das Coisas"). Um texto que não é rótulo
+// conhecido volta igual.
+std::string nome_rotulo(const std::string& rotulo);
+
 // Lê o arquivo `arquivo` no formato P;id;texto / A;letra;texto;ROTULO=peso;...
 // Lança std::runtime_error com "arquivo:linha: motivo" em caso de erro de formato.
 std::vector<Pergunta> carregar_perguntas(const std::string& arquivo);
