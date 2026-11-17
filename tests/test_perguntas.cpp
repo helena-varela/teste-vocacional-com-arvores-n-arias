@@ -324,6 +324,17 @@ void teste_rotulo_sem_cobertura() {
 // Testes de rótulos
 // ---------------------------------------------------------------------------
 
+void teste_nome_rotulo() {
+    verificar(nome_rotulo("PES_IOT") == "Internet das Coisas", "nome_rotulo de PES_IOT");
+    verificar(nome_rotulo("CICLO_ES") == "Engenharia de Software", "nome_rotulo de CICLO_ES");
+    // Todo rótulo válido tem nome por extenso (diferente do próprio rótulo).
+    bool todos = true;
+    for (const auto& r : rotulos_pes()) todos = todos && nome_rotulo(r) != r;
+    for (const auto& r : rotulos_ciclo()) todos = todos && nome_rotulo(r) != r;
+    verificar(todos, "todo rotulo valido tem nome por extenso");
+    verificar(nome_rotulo("Qualquer texto") == "Qualquer texto", "texto desconhecido volta igual");
+}
+
 void teste_rotulos() {
     const auto& pes   = rotulos_pes();
     const auto& ciclo = rotulos_ciclo();
@@ -374,6 +385,7 @@ int main() {
 
     // Rótulos.
     teste_rotulos();
+    teste_nome_rotulo();
 
     std::cout << (total - falhas) << "/" << total << " testes passaram\n";
     return falhas == 0 ? 0 : 1;

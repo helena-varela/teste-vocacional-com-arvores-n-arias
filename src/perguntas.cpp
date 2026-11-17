@@ -25,6 +25,24 @@ const std::vector<std::string>& rotulos_ciclo() {
     return r;
 }
 
+std::string nome_rotulo(const std::string& rotulo) {
+    static const std::map<std::string, std::string> nomes = {
+        {"PES_BIO",   "Bioinformática"},
+        {"PES_DADOS", "Ciência de Dados"},
+        {"PES_EDU",   "Informática Educacional"},
+        {"PES_INOV",  "Inovação e Empreendedorismo"},
+        {"PES_IA",    "Inteligência Artificial"},
+        {"PES_IOT",   "Internet das Coisas"},
+        {"PES_JOGOS", "Jogos Digitais"},
+        {"PES_SIG",   "Sistemas de Informações Gerenciais"},
+        {"CICLO_IA",  "Inteligência Artificial"},
+        {"CICLO_CC",  "Ciência da Computação"},
+        {"CICLO_ES",  "Engenharia de Software"},
+    };
+    const auto it = nomes.find(rotulo);
+    return it != nomes.end() ? it->second : rotulo;
+}
+
 // ---------------------------------------------------------------------------
 // Helpers internos
 // ---------------------------------------------------------------------------

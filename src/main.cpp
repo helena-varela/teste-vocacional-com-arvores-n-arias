@@ -1,4 +1,6 @@
+#include <exception>
 #include <iostream>
+#include <vector>
 
 #include "arvore.hpp"
 #include "exemplo.hpp"
@@ -29,7 +31,17 @@ int main() {
   // isso eh provisorio, qnd os construtores estiverem pronto aqui sera as arvores reais
   const Arvore arvore_pes = exemplo::arvore_pes();
   const Arvore arvore_ciclo = exemplo::arvore_ciclo();
-  const std::vector<Pergunta> perguntas = carregar_perguntas("dados/perguntas.txt");
+
+  // O caminho é relativo: o programa precisa rodar a partir da raiz do
+  // projeto (é o que o `make run` faz).
+  std::vector<Pergunta> perguntas;
+  try {
+    perguntas = carregar_perguntas("dados/perguntas.txt");
+  } catch (const std::exception& erro) {
+    std::cerr << "Erro ao carregar as perguntas: " << erro.what() << "\n"
+              << "Rode o programa a partir da pasta do projeto (ex.: make run).\n";
+    return 1;
+  }
 
   while (true) {
     mostrar_menu();
