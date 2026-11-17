@@ -68,7 +68,7 @@ std::vector<Perfil> carregar_perfis(const std::string& arquivo_csv) {
         throw std::runtime_error(prefixo(arquivo_csv, 1) + "cabecalho sem colunas obrigatorias");
     }
 
-        // ----- Linhas de dados -----
+    // ----- Linhas de dados -----
     std::vector<Perfil> perfis;
     int num_linha = 1;
     while (std::getline(f, linha)) {
