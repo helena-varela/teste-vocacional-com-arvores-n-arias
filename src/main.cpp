@@ -2,6 +2,8 @@
 
 #include "arvore.hpp"
 #include "exemplo.hpp"
+#include "experimento.hpp"
+#include "perguntas.hpp"
 #include "terminal.hpp"
 
 namespace {
@@ -27,14 +29,14 @@ int main() {
   // isso eh provisorio, qnd os construtores estiverem pronto aqui sera as arvores reais
   const Arvore arvore_pes = exemplo::arvore_pes();
   const Arvore arvore_ciclo = exemplo::arvore_ciclo();
+  const std::vector<Pergunta> perguntas = carregar_perguntas("dados/perguntas.txt");
 
   while (true) {
     mostrar_menu();
     const int opcao = ler_numero(0, 4);
     switch (opcao) {
       case 1:
-        // aqui vai chamar o teste interativo com as duas arvores
-        std::cout << "Teste interativo ainda nao implementado (Pessoa 5).\n";
+        executar_teste_interativo(arvore_pes, arvore_ciclo, perguntas);
         break;
       case 2:
         mostrar_arvore(arvore_pes, "PES");
