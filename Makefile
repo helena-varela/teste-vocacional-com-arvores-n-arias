@@ -8,6 +8,7 @@ OBJ_COMUM := $(SRC_COMUM:src/%.cpp=build/%.o)
 PROGRAMA         := bin/teste_vocacional
 TESTES_ARVORE    := bin/testes_arvore
 TESTES_PERGUNTAS := bin/testes_perguntas
+TESTES_EXPERIMENTO := bin/testes_experimento
 
 .PHONY: all run testes clean
 
@@ -25,6 +26,12 @@ $(TESTES_PERGUNTAS): build/test_perguntas.o $(OBJ_COMUM) | bin
 build/%.o: src/%.cpp | build
 	$(CXX) $(CXXFLAGS) -c $< -o $@
 
+$(TESTES_EXPERIMENTO): build/teste_experimento.o $(OBJ_COMUM) | bin
+	$(CXX) $(CXXFLAGS) $^ -o $@
+
+build/teste_experimento.o: tests/teste_experimento.cpp | build
+	$(CXX) $(CXXFLAGS) -c $< -o $@
+
 build/teste_arvore.o: tests/teste_arvore.cpp | build
 	$(CXX) $(CXXFLAGS) -c $< -o $@
 
@@ -34,8 +41,9 @@ build/test_perguntas.o: tests/test_perguntas.cpp | build
 run: $(PROGRAMA)
 	./$(PROGRAMA)
 
-testes: $(TESTES_ARVORE) $(TESTES_PERGUNTAS)
+testes: $(TESTES_ARVORE) $(TESTES_PERGUNTAS) $(TESTES_EXPERIMENTO)
 	./$(TESTES_ARVORE)
+	./$(TESTES_EXPERIMENTO)
 	./$(TESTES_PERGUNTAS)
 
 bin build:
