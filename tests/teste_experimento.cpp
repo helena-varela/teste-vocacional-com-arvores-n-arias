@@ -67,20 +67,37 @@ void teste_classificar_erros() {
 
 // ----- carregar_perfis -----
 
-void teste_carregar_perfis_csv_real() {
-    const std::vector<Perfil> perfis = carregar_perfis("dados/sinteticos/ruido_10pct_teste.csv");
-    verificar(!perfis.empty(), "carregar_perfis: le pelo menos um perfil");
-    if (perfis.empty()) return;
+// Arquivo pequeno e fixo (tests/dados/perfis_exemplo.csv): os valores exatos
+// não mudam quando os perfis sintéticos são gerados de novo.
+void teste_carregar_perfis_exemplo() {
+    const std::vector<Perfil> perfis = carregar_perfis("tests/dados/perfis_exemplo.csv");
+    verificar(perfis.size() == 2, "carregar_perfis: le os 2 perfis do exemplo");
+    if (perfis.size() != 2) return;
 
     const Perfil& p = perfis[0];
     verificar(p.id == 1, "carregar_perfis: id do primeiro perfil");
-    verificar(!p.treino, "carregar_perfis: arquivo de teste tem divisao = teste");
+    verificar(!p.treino, "carregar_perfis: divisao = teste");
     verificar(p.pes == "PES_JOGOS", "carregar_perfis: pes do primeiro perfil");
     verificar(p.ciclo == "CICLO_IA", "carregar_perfis: ciclo do primeiro perfil");
     verificar(p.respostas.size() == 14, "carregar_perfis: 14 respostas");
     verificar(p.respostas.count(1) && p.respostas.at(1) == 'c', "carregar_perfis: Q1 = c");
     verificar(rotulo(p, Alvo::PES) == "PES_JOGOS", "rotulo: alvo PES");
     verificar(rotulo(p, Alvo::CICLO) == "CICLO_IA", "rotulo: alvo CICLO");
+    verificar(perfis[1].treino, "carregar_perfis: divisao = treino");
+}
+
+// CSV gerado de verdade: confere só o formato, não valores exatos.
+void teste_carregar_perfis_csv_real() {
+    const std::vector<Perfil> perfis = carregar_perfis("dados/sinteticos/ruido_10pct_teste.csv");
+    verificar(!perfis.empty(), "carregar_perfis: le pelo menos um perfil do CSV real");
+    bool formato_ok = !perfis.empty();
+    for (const Perfil& p : perfis) {
+        if (p.treino || p.respostas.size() != 14 ||
+            p.pes.rfind("PES_", 0) != 0 || p.ciclo.rfind("CICLO_", 0) != 0) {
+            formato_ok = false;
+        }
+    }
+    verificar(formato_ok, "carregar_perfis: CSV real com divisao teste, 14 respostas e rotulos validos");
 }
 
 void teste_carregar_perfis_treino() {
@@ -105,6 +122,7 @@ int main() {
     teste_classificar_folha_direta();
     teste_classificar_ignora_respostas_extras();
     teste_classificar_erros();
+    teste_carregar_perfis_exemplo();
     teste_carregar_perfis_csv_real();
     teste_carregar_perfis_treino();
     teste_carregar_perfis_arquivo_inexistente();
