@@ -44,3 +44,30 @@ double entropia(const std::vector<Perfil>& perfis, Alvo alvo);
 // Ganho de informação de dividir `perfis` pelas alternativas de `pergunta`.
 double ganho_informacao(const std::vector<Perfil>& perfis,
                         const Pergunta& pergunta, Alvo alvo);
+
+// ---------------------------------------------------------------------------
+// Camada usada pelo experimento (Pessoa 5) e pelo menu.
+// ---------------------------------------------------------------------------
+
+// As três estratégias comparadas no artigo.
+enum class Estrategia { MANUAL, ALEATORIA, GANHO };
+
+// Texto da coluna "arvore" do CSV 1: "manual", "aleatoria" ou "ganho".
+const char* nome_estrategia(Estrategia estrategia);
+
+// Despacha para o construtor da estratégia. MANUAL usa ordem_manual();
+// `semente` só vale para ALEATORIA.
+Arvore construir(Estrategia estrategia, const std::vector<Pergunta>& perguntas,
+                 const std::vector<Perfil>& treino, Alvo alvo,
+                 unsigned semente = 42, int min_perfis = 2);
+
+// T_PES e T_CICLO construídas com a mesma estratégia, mesmo banco e mesma semente.
+struct ParDeArvores {
+  Arvore pes;
+  Arvore ciclo;
+};
+
+ParDeArvores construir_par(Estrategia estrategia,
+                           const std::vector<Pergunta>& perguntas,
+                           const std::vector<Perfil>& treino,
+                           unsigned semente = 42, int min_perfis = 2);
