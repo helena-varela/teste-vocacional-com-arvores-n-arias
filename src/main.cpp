@@ -3,12 +3,17 @@
 #include <vector>
 
 #include "arvore.hpp"
-#include "exemplo.hpp"
+#include "construtores.hpp"
 #include "experimento.hpp"
+#include "perfis.hpp"
 #include "perguntas.hpp"
 #include "terminal.hpp"
 
 namespace {
+  // Perfis usados para construir as árvores do teste interativo. O cenário de
+  // 10% de ruído é o que tem o sinal mais limpo de cada combinação PES+ciclo.
+  const char* const ARQUIVO_TREINO = "dados/sinteticos/ruido_10pct_treino.csv";
+
   void mostrar_menu() {
     std::cout << "\n========================================\n"
                 "   TESTE VOCACIONAL - PES e 2o CICLO\n"
@@ -28,20 +33,23 @@ namespace {
 }
 
 int main() {
-  // isso eh provisorio, qnd os construtores estiverem pronto aqui sera as arvores reais
-  const Arvore arvore_pes = exemplo::arvore_pes();
-  const Arvore arvore_ciclo = exemplo::arvore_ciclo();
-
-  // O caminho é relativo: o programa precisa rodar a partir da raiz do
+  // Os caminhos são relativos: o programa precisa rodar a partir da raiz do
   // projeto (é o que o `make run` faz).
   std::vector<Pergunta> perguntas;
+  std::vector<Perfil> treino;
   try {
     perguntas = carregar_perguntas("dados/perguntas.txt");
+    treino = carregar_perfis(ARQUIVO_TREINO);
   } catch (const std::exception& erro) {
-    std::cerr << "Erro ao carregar as perguntas: " << erro.what() << "\n"
+    std::cerr << "Erro ao carregar os dados: " << erro.what() << "\n"
               << "Rode o programa a partir da pasta do projeto (ex.: make run).\n";
     return 1;
   }
+
+  // Árvores do teste: estratégia de ganho de informação (ID3).
+  const ParDeArvores arvores = construir_par(Estrategia::GANHO, perguntas, treino);
+  const Arvore& arvore_pes = arvores.pes;
+  const Arvore& arvore_ciclo = arvores.ciclo;
 
   while (true) {
     mostrar_menu();
@@ -57,7 +65,8 @@ int main() {
         mostrar_arvore(arvore_ciclo, "2o ciclo");
         break;
       case 4:
-        // chamar o script de experimentos.
+        // Falta executar_experimentos() (Pessoa 5). Quando existir:
+        // executar_experimentos("dados/sinteticos", "resultados");
         std::cout << "Experimentos ainda nao implementados (Pessoa 5).\n";
         break;
       default:
