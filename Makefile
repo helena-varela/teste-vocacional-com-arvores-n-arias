@@ -9,6 +9,7 @@ PROGRAMA         := bin/teste_vocacional
 TESTES_ARVORE    := bin/testes_arvore
 TESTES_PERGUNTAS := bin/testes_perguntas
 TESTES_EXPERIMENTO := bin/testes_experimento
+TESTES_CONSTRUTORES := bin/testes_construtores
 
 .PHONY: all run testes clean
 
@@ -29,22 +30,21 @@ build/%.o: src/%.cpp | build
 $(TESTES_EXPERIMENTO): build/teste_experimento.o $(OBJ_COMUM) | bin
 	$(CXX) $(CXXFLAGS) $^ -o $@
 
-build/teste_experimento.o: tests/teste_experimento.cpp | build
+# Objetos dos testes: tests/<nome>.cpp -> build/<nome>.o
+build/%.o: tests/%.cpp | build
 	$(CXX) $(CXXFLAGS) -c $< -o $@
 
-build/teste_arvore.o: tests/teste_arvore.cpp | build
-	$(CXX) $(CXXFLAGS) -c $< -o $@
-
-build/test_perguntas.o: tests/test_perguntas.cpp | build
-	$(CXX) $(CXXFLAGS) -c $< -o $@
+$(TESTES_CONSTRUTORES): build/teste_construtores.o $(OBJ_COMUM) | bin
+	$(CXX) $(CXXFLAGS) $^ -o $@
 
 run: $(PROGRAMA)
 	./$(PROGRAMA)
 
-testes: $(TESTES_ARVORE) $(TESTES_PERGUNTAS) $(TESTES_EXPERIMENTO)
+testes: $(TESTES_ARVORE) $(TESTES_PERGUNTAS) $(TESTES_EXPERIMENTO) $(TESTES_CONSTRUTORES)
 	./$(TESTES_ARVORE)
 	./$(TESTES_EXPERIMENTO)
 	./$(TESTES_PERGUNTAS)
+	./$(TESTES_CONSTRUTORES)
 
 bin build:
 	mkdir -p $@

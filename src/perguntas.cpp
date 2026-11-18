@@ -292,15 +292,15 @@ std::vector<int> ordem_manual() {
         1,   // O que mais te atrai em TI?
         2,   // Em qual area voce gostaria de aplicar seus conhecimentos?
         3,   // Qual projeto voce escolheria?
+        7,   // Qual tarefa voce faria com mais prazer?
+        8,   // Qual disciplina do BTI voce mais gostou ou espera gostar?
+        4,   // Como e a sua relacao com a matematica?
+        12,  // Como voce costuma resolver problemas?
+        9,   // Quanto te interessa biologia e saude?
+        10,  // Diante de uma ideia nova, o que voce faz primeiro?
+        11,  // Como voce se imagina profissionalmente daqui a 10 anos?
         6,   // O que mais te motiva em um projeto?
         13,  // Qual noticia voce leria primeiro?
-        7,   // Qual tarefa voce faria com mais prazer?
-        4,   // Como e a sua relacao com a matematica?
-        8,   // Qual disciplina do BTI voce mais gostou ou espera gostar?
-        12,  // Como voce costuma resolver problemas?
-        10,  // Diante de uma ideia nova, o que voce faz primeiro?
-        9,   // Quanto te interessa biologia e saude?
-        11,  // Como voce se imagina profissionalmente daqui a 10 anos?
         14,  // Em que ambiente voce gostaria de trabalhar?
         5,   // Voce prefere trabalhar sozinho ou em grupo? (sem pesos - contraste)
     };
