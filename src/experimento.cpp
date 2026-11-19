@@ -6,6 +6,7 @@
 #include <fstream>
 #include <iomanip>
 #include <map>
+#include <set>
 #include <stdexcept>
 
 #include "classificador.hpp"
@@ -118,6 +119,31 @@ Metricas avaliar(const Arvore& arvore, const std::vector<Perfil>& teste, Alvo al
     return m;
 }
 
+// Avalia o par (T_PES, T_CICLO) como o aluno usaria: o par só acerta se os
+// dois rótulos estiverem certos, e as perguntas contadas são as distintas dos
+// dois caminhos (a árvore de ciclo reaproveita as respostas via cache).
+Metricas avaliar_conjunto(const ParDeArvores& par, const std::vector<Perfil>& teste) {
+    Metricas m;
+    if (teste.empty()) return m;
+
+    int acertos = 0;
+    long soma_perguntas = 0;
+    for (const Perfil& p : teste) {
+        const Classificacao cp = classificar(par.pes, p.respostas);
+        const Classificacao cc = classificar(par.ciclo, p.respostas);
+        if (cp.resultado == p.pes && cc.resultado == p.ciclo) ++acertos;
+
+        std::set<int> distintas(cp.caminho.begin(), cp.caminho.end());
+        distintas.insert(cc.caminho.begin(), cc.caminho.end());
+        const int n = static_cast<int>(distintas.size());
+        soma_perguntas += n;
+        m.max_perguntas = std::max(m.max_perguntas, n);
+    }
+    m.acuracia = static_cast<double>(acertos) / teste.size();
+    m.media_perguntas = static_cast<double>(soma_perguntas) / teste.size();
+    return m;
+}
+
 double media(const std::vector<double>& v) {
     double s = 0.0;
     for (double x : v) s += x;
@@ -164,6 +190,7 @@ void executar_experimentos(const std::string& diretorio_perfis,
         const std::vector<Perfil> teste = carregar_perfis(base + "teste.csv");
         const std::string ruido = "0." + r;
 
+        // Avaliação por árvore: cada alvo separadamente.
         for (Alvo alvo : alvos) {
             const char* nome_alvo = (alvo == Alvo::PES) ? "PES" : "CICLO";
 
@@ -194,6 +221,35 @@ void executar_experimentos(const std::string& diretorio_perfis,
                           << nome_estrategia(e) << ": acuracia " << media(acuracias)
                           << ", perguntas " << media(perguntas_medias) << '\n';
             }
+        }
+
+        // Avaliação conjunta: PES + ciclo com o mesmo par de árvores e cache.
+        for (Estrategia e : estrategias) {
+            const int execucoes = (e == Estrategia::ALEATORIA) ? repeticoes_aleatoria : 1;
+            std::vector<double> acuracias, perguntas_medias;
+
+            for (int i = 0; i < execucoes; ++i) {
+                const unsigned semente = 42 + i;
+                const ParDeArvores par = construir_par(e, perguntas, treino, semente);
+                const Metricas m = avaliar_conjunto(par, teste);
+
+                acuracias.push_back(m.acuracia);
+                perguntas_medias.push_back(m.media_perguntas);
+
+                csv1 << ruido << ",CONJUNTO," << nome_estrategia(e) << ',' << semente << ','
+                     << m.acuracia << ',' << m.media_perguntas << ',' << m.max_perguntas << ','
+                     << std::max(par.pes.altura(), par.ciclo.altura()) << ','
+                     << par.pes.contar_nos() + par.ciclo.contar_nos() << ','
+                     << par.pes.contar_folhas() + par.ciclo.contar_folhas() << '\n';
+            }
+
+            csv2 << ruido << ",CONJUNTO," << nome_estrategia(e) << ',' << execucoes << ','
+                 << media(acuracias) << ',' << desvio_padrao(acuracias) << ','
+                 << media(perguntas_medias) << ',' << desvio_padrao(perguntas_medias) << '\n';
+
+            std::cout << "ruido " << ruido << " | CONJUNTO | " << nome_estrategia(e)
+                      << ": acuracia " << media(acuracias) << ", perguntas "
+                      << media(perguntas_medias) << '\n';
         }
     }
 
