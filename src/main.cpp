@@ -65,9 +65,11 @@ int main() {
         mostrar_arvore(arvore_ciclo, "2o ciclo");
         break;
       case 4:
-        // Falta executar_experimentos() (Pessoa 5). Quando existir:
-        // executar_experimentos("dados/sinteticos", "resultados");
-        std::cout << "Experimentos ainda nao implementados (Pessoa 5).\n";
+        try {
+          executar_experimentos("dados/sinteticos", "resultados");
+        } catch (const std::exception& e) {
+          std::cout << "Erro nos experimentos: " << e.what() << '\n';
+        }
         break;
       default:
         std::cout << "Ate mais!\n";
