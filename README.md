@@ -32,18 +32,36 @@ make clean      # apaga bin/ e build/
 ## Estrutura do repositório
 
 ```
-include/            cabeçalhos (.hpp)
-src/                implementação (.cpp)
-  arvore.cpp        estrutura N-ária: nós, pré-ordem, BFS, altura, contagens
-  terminal.cpp      leitura e validação das respostas no terminal
-  exemplo.cpp       árvores pequenas montadas à mão (usadas só nos testes)
-  perguntas.cpp     banco de perguntas: carregar_perguntas(), rotulos_*, ordem_manual()
-  main.cpp          menu; as árvores do teste são as do ganho de informação,
-                    construídas com dados/sinteticos/ruido_10pct_treino.csv
-dados/              arquivos de dados
-  perguntas.txt     banco de perguntas no formato P;id;texto / A;letra;texto;ROTULO=peso
-tests/              testes unitários
+include/              cabeçalhos (.hpp)
+src/                  implementação (.cpp)
+  arvore.cpp          estrutura N-ária: nós, pré-ordem, BFS, altura, contagens
+  terminal.cpp        leitura e validação das respostas no terminal
+  perguntas.cpp       banco de perguntas: carregar_perguntas(), nome_rotulo(), ordem_manual()
+  perfis.cpp          carregar_perfis(): lê os CSVs de perfis sintéticos
+  construtores.cpp    árvores por ordem manual, ordem aleatória e ganho de informação (ID3)
+  classificador.cpp   classificar(): percorre a árvore da raiz até uma folha
+  experimento.cpp     teste interativo (opção 1) e experimentos (opção 4)
+  exemplo.cpp         árvores pequenas montadas à mão (usadas só nos testes)
+  main.cpp            menu; as árvores do teste são as do ganho de informação,
+                      construídas com dados/sinteticos/ruido_10pct_treino.csv
+dados/
+  perguntas.txt       banco de perguntas no formato P;id;texto / A;letra;texto;ROTULO=peso
+  sinteticos/         perfis sintéticos (treino e teste por nível de ruído)
+resultados/           CSVs gerados pela opção 4 do menu
+scripts/
+  gerar_perfis.py     gera os perfis sintéticos e o gráfico de aderência
+tests/                testes unitários (C++ e Python)
+  dados/              CSV pequeno e fixo usado pelos testes
 ```
+
+## Menu
+
+| Opção | O que faz |
+| --- | --- |
+| 1 | Faz o teste: percorre a árvore de PES e depois a de ciclo. Pergunta já respondida não se repete (cache). |
+| 2 | Mostra a árvore de PES em pré-ordem, com altura, nós, folhas e profundidade média |
+| 3 | O mesmo para a árvore de 2º ciclo |
+| 4 | Roda os experimentos e grava os CSVs em `resultados/` |
 
 ## Divisão dos módulos
 
@@ -53,7 +71,7 @@ tests/              testes unitários
 | Pessoa 2 | Banco de perguntas (`perguntas.txt`) e `carregar_perguntas()` |
 | Pessoa 3 | Gerador de perfis simulados e script Python dos gráficos |
 | Pessoa 4 | Construtores das árvores (ordem manual, aleatória e por ganho de informação) |
-| Pessoa 5 | Teste interativo e experimentos (gera os CSVs) |
+| Pessoa 5 | Leitura dos perfis, classificador, teste interativo e experimentos (gera os CSVs) |
 
 ## Como usar a estrutura (para quem vai construir as árvores)
 
@@ -104,6 +122,27 @@ python3 scripts/gerar_perfis.py --n 600 --ruidos 0.1,0.25,0.4 --semente 42
 
 Os dados são sintéticos e reproduzem os pesos atuais, não constituindo
 validação empírica dos perfis ou das recomendações.
+
+## Experimentos
+
+A opção 4 do menu (`make run` e depois `4`) constrói as árvores com os perfis
+de treino de cada nível de ruído e as avalia nos perfis de teste:
+
+- estratégias: ordem manual, ordem aleatória (30 execuções, sementes 42 a 71)
+  e ganho de informação;
+- alvos: `PES`, `CICLO` e `CONJUNTO` (PES e ciclo juntos, com o cache: só
+  acerta se os dois rótulos estiverem certos, e conta as perguntas distintas
+  dos dois caminhos).
+
+Saída em `resultados/`:
+
+| Arquivo | Conteúdo |
+| --- | --- |
+| `resultados_execucoes.csv` | uma linha por árvore construída: `ruido,alvo,arvore,semente,acuracia,media_perguntas,max_perguntas,altura,nos,folhas` |
+| `resultados_resumo.csv` | média e desvio padrão por ruído, alvo e estratégia: `ruido,alvo,arvore,execucoes,acuracia_media,acuracia_dp,media_perguntas_media,media_perguntas_dp` |
+
+Os resultados são determinísticos: rodar de novo com os mesmos perfis gera
+os mesmos CSVs.
 
 ## Combinados do grupo
 
